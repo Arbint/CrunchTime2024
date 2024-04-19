@@ -16,6 +16,7 @@ void UCMainMenu::NativeConstruct()
 	CreateSessionBtn->SetIsEnabled(false);
 	SessionNameText->OnTextChanged.AddDynamic(this, &UCMainMenu::SessionNameTextChanged);
 	FindSessionBtn->OnClicked.AddDynamic(this, &UCMainMenu::FindSessionBtnClicked);
+
 	CGameInst=GetGameInstance<UCGameInstance>();
 	CGameInst->OnSessionSearchCompleted.AddUObject(this, &UCMainMenu::SessionSearchCompleted);
 }
@@ -59,6 +60,7 @@ void UCMainMenu::LoadSessionWithIndex(int Index)
 
 void UCMainMenu::SessionSearchCompleted(const TArray<FOnlineSessionSearchResult>& SearchResults)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Session Serach Completed And"));
 	int index = 0;
 	for (const FOnlineSessionSearchResult& SearchResult : SearchResults)
 	{
@@ -69,6 +71,7 @@ void UCMainMenu::SessionSearchCompleted(const TArray<FOnlineSessionSearchResult>
 		{
 			NewSessionEntry->SetSessionInfo(SessionName, index);
 			NewSessionEntry->OnSessionBtnClicked.AddUObject(this, &UCMainMenu::LoadSessionWithIndex);
+			SessionEntryList->AddChild(NewSessionEntry);
 		}
 		++index;
 	}
