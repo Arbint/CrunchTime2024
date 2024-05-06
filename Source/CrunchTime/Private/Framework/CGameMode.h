@@ -13,5 +13,8 @@ UCLASS()
 class ACGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+public:
+	ACGameMode();
+protected:
+	UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 };

@@ -26,7 +26,7 @@ public:
 	const FName& GetSessionNameKey() const { return SessionNameKey; }
 	void JoinSessionWithSearchResultIndex(int SearchResultIndex);
 	FORCEINLINE	FName GetCurrentSessionName() const { return CurrentLobbyName; }
-
+	void LoadGameLevel();
 
 protected:
 	virtual void Init() override;

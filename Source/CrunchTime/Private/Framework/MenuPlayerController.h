@@ -15,8 +15,9 @@ class AMenuPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	virtual void BeginPlay() override;
-	virtual void 
+	virtual void OnRep_PlayerState() override;
 private:
+	void SpawnUI();
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> MenuToSpawn;
 };

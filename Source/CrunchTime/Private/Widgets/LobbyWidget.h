@@ -17,6 +17,8 @@ class ULobbyWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 private:
+	UFUNCTION()
+	void LoadGame();
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* LobbyNameText;
 
@@ -26,6 +28,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UTileView* CharacterList;
 	
+	UPROPERTY(meta = (BindWidget))
+	class UButton* StartBtn;
+
 	UPROPERTY()
 	class ACGameState* GameState;
 

@@ -20,6 +20,8 @@ public:
 	FOnPickedCharacterReplicated OnPickedCharacterReplicated;
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_IssueCharacterPick(class UCharacterDefination* NewPickedCharacterDefination);
+	const TSubclassOf<class ACharacter> GetPickedCharacterClass() const;
+	const UCharacterDefination* GetPickedCharacterDef() const { return PickedCharacter; }
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_PickedCharacter)
 	class UCharacterDefination* PickedCharacter;
@@ -28,5 +30,7 @@ private:
 	void OnRep_PickedCharacter();
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+
+	virtual void CopyProperties(APlayerState* PlayerState) override;
 };
 

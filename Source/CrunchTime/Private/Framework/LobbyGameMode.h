@@ -13,6 +13,8 @@ UCLASS()
 class ALobbyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+public:
+	ALobbyGameMode();
 protected:
 	//game instance is created here, after 
 	virtual void InitGameState() override;

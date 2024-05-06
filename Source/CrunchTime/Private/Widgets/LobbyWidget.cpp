@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Widgets/LobbyWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/ListView.h"
@@ -11,6 +10,8 @@
 #include "Framework/CharacterDefination.h"
 #include "Framework/CPlayerState.h"
 #include "Widgets/CharacterDefinationEntry.h"
+#include "Components/Button.h"
+#include "Framework/CGameInstance.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -30,6 +31,16 @@ void ULobbyWidget::NativeConstruct()
 		CharacterList->SetListItems(GameState->GetCharacterDefinations());
 		CharacterList->OnItemSelectionChanged().AddUObject(this, &ULobbyWidget::PlayerSelectedIssued);
 		GameState->OnCharacterSelectedReplicated.AddUObject(this, &ULobbyWidget::CharcterSelectionReplicated);
+	}
+	StartBtn->OnClicked.AddDynamic(this, &ULobbyWidget::LoadGame);
+}
+
+void ULobbyWidget::LoadGame()
+{
+	UCGameInstance* GameInst = GetGameInstance<UCGameInstance>();
+	if(GameInst)
+	{ 
+		GameInst->LoadGameLevel();
 	}
 }
 

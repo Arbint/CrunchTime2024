@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Framework/CGameInstance.h"
 #include "OnlineSubsystem.h"
 #include "Online/OnlineSessionNames.h"
@@ -62,6 +61,11 @@ void UCGameInstance::JoinSessionWithSearchResultIndex(int SearchResultIndex)
 	UE_LOG(LogTemp, Warning, TEXT("Trying to Join Session with name: %s"), *SessionNameStr)
 	SearchResult.Session.SessionSettings.Get(GetSessionNameKey(), SessionNameStr);
 	SessionPtr->JoinSession(0, FName{ SessionNameStr }, SearchResult);
+}
+
+void UCGameInstance::LoadGameLevel()
+{
+	LoadMapAndListen(GameLevel);
 }
 
 void UCGameInstance::Init()

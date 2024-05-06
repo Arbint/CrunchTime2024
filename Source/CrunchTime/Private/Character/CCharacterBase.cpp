@@ -85,7 +85,6 @@ void ACCharacterBase::BeginPlay()
 void ACCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ACCharacterBase::PossessedBy(AController* NewController)
@@ -110,7 +109,6 @@ void ACCharacterBase::PossessedBy(AController* NewController)
 void ACCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ACCharacterBase::PlayMontage(UAnimMontage* MontageToPlay)
@@ -122,6 +120,48 @@ void ACCharacterBase::PlayMontage(UAnimMontage* MontageToPlay)
 			GetMesh()->GetAnimInstance()->Montage_Play(MontageToPlay);
 		}
 	}
+}
+
+float ACCharacterBase::GetAttributeValue(const FGameplayAttribute& Attr) const
+{
+	float val = 0;
+	if (AbilitySystemComponent)
+	{
+		bool found = 0;
+		val = AbilitySystemComponent->GetGameplayAttributeValue(Attr, found);
+	}
+
+	return val;
+}
+
+float ACCharacterBase::GetHealth() const
+{
+	return GetAttributeValue(UCAttributeSet::GetHealthAttribute());
+}
+
+float ACCharacterBase::GetMaxHealth() const
+{
+	return GetAttributeValue(UCAttributeSet::GetMaxHealthAttribute());
+}
+
+float ACCharacterBase::GetMana() const
+{
+	return GetAttributeValue(UCAttributeSet::GetManaAttribute());
+}
+
+float ACCharacterBase::GetMaxMana() const
+{
+	return GetAttributeValue(UCAttributeSet::GetMaxManaAttribute());
+}
+
+float ACCharacterBase::GetExperience() const
+{
+	return GetAttributeValue(UCAttributeSet::GetExperienceAttribute());
+}
+
+float ACCharacterBase::GetNextLevelExperience() const
+{
+	return GetAttributeValue(UCAttributeSet::GetNextLevelExperienceAttribute());
 }
 
 UAbilitySystemComponent* ACCharacterBase::GetAbilitySystemComponent() const
@@ -141,9 +181,11 @@ void ACCharacterBase::InitStatusHUD()
 	}
 
 	StatusGuage->SetRenderScale(FVector2D{0.5f});
-
-	StatusGuage->SetHealth(AttributeSet->GetHealth(), AttributeSet->GetMaxHealth());
-	StatusGuage->SetMana(AttributeSet->GetMana(), AttributeSet->GetMaxMana());
+	if(AttributeSet)
+	{
+		StatusGuage->SetHealth(GetHealth(), GetMaxHealth());
+		StatusGuage->SetMana(GetMana(), GetMaxMana());
+	}
 
 	if (IsLocallyControlled())
 	{
@@ -188,11 +230,11 @@ void ACCharacterBase::StunTagChanged(const FGameplayTag TagChanged, int32 NewSta
 void ACCharacterBase::HealthUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	if(StatusGuage)
-		StatusGuage->SetHealth(ChangeData.NewValue, AttributeSet->GetMaxHealth());
+		StatusGuage->SetHealth(ChangeData.NewValue, GetMaxHealth());
 
 	if (HasAuthority())
 	{
-		if (ChangeData.NewValue >= AttributeSet->GetMaxHealth())
+		if (ChangeData.NewValue >= GetMaxHealth())
 
 		{
 			AbilitySystemComponent->AddLooseGameplayTag(UCAbilityGenericTags::GetFullHealthTag());
@@ -221,11 +263,11 @@ void ACCharacterBase::HealthUpdated(const FOnAttributeChangeData& ChangeData)
 void ACCharacterBase::ManaUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	if (StatusGuage)
-		StatusGuage->SetMana(ChangeData.NewValue, AttributeSet->GetMaxMana());
+		StatusGuage->SetMana(ChangeData.NewValue, GetMaxMana());
 
 	if (HasAuthority())
 	{
-		if (ChangeData.NewValue >= AttributeSet->GetMaxMana())
+		if (ChangeData.NewValue >= GetMaxMana())
 		{
 			AbilitySystemComponent->AddLooseGameplayTag(UCAbilityGenericTags::GetFullManaTag());
 		}
@@ -238,13 +280,13 @@ void ACCharacterBase::ManaUpdated(const FOnAttributeChangeData& ChangeData)
 void ACCharacterBase::MaxHealthUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	if (StatusGuage)
-		StatusGuage->SetHealth(AttributeSet->GetHealth(), ChangeData.NewValue);
+		StatusGuage->SetHealth(GetHealth(), ChangeData.NewValue);
 }
 
 void ACCharacterBase::MaxManaUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	if (StatusGuage)
-		StatusGuage->SetMana(AttributeSet->GetMana(), ChangeData.NewValue);
+		StatusGuage->SetMana(GetMana(), ChangeData.NewValue);
 }
 
 void ACCharacterBase::ExperienceUpdated(const FOnAttributeChangeData& ChangeData)
@@ -252,7 +294,7 @@ void ACCharacterBase::ExperienceUpdated(const FOnAttributeChangeData& ChangeData
 	UE_LOG(LogTemp, Warning, TEXT("Experience is now: %f"), ChangeData.NewValue);
 	if (HasAuthority())
 	{
-		if (ChangeData.NewValue >= AttributeSet->GetNextLevelExperience())
+		if (ChangeData.NewValue >= GetNextLevelExperience())
 		{
 			LevelUp();
 		}
@@ -262,9 +304,9 @@ void ACCharacterBase::ExperienceUpdated(const FOnAttributeChangeData& ChangeData
 void ACCharacterBase::NextLevelExperienceUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Next Level Experience is now: %f"), ChangeData.NewValue);
-	if (HasAuthority())
+	if (HasAuthority() && AttributeSet)
 	{
-		if (ChangeData.NewValue <= AttributeSet->GetExperience())
+		if (ChangeData.NewValue <= GetExperience())
 		{
 			LevelUp();
 		}

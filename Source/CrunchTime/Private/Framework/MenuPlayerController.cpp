@@ -6,6 +6,20 @@
 void AMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	if (HasAuthority())
+	{
+		SpawnUI();
+	}
+}
+
+void AMenuPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	SpawnUI();
+}
+
+void AMenuPlayerController::SpawnUI()
+{
 	if (IsLocalPlayerController() && MenuToSpawn)
 	{
 		UUserWidget* Widget = CreateWidget<UUserWidget>(this, MenuToSpawn);

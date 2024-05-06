@@ -55,6 +55,13 @@ private:
 	/*                              Gameplay Ability                                  */
 	/*************************************************************/
 public:
+	float GetAttributeValue(const FGameplayAttribute& Attr) const;
+	float GetHealth() const;
+	float GetMaxHealth() const;
+	float GetMana() const;
+	float GetMaxMana() const;
+	float GetExperience() const;
+	float GetNextLevelExperience() const;
 	FORCEINLINE bool IsAiming() const { return bIsAiming; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void InitStatusHUD();

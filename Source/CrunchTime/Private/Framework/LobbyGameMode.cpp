@@ -5,6 +5,11 @@
 #include "Framework/CGameState.h"
 #include "Framework/CGameInstance.h"
 
+ALobbyGameMode::ALobbyGameMode()
+{
+	bUseSeamlessTravel = true;
+}
+
 void ALobbyGameMode::InitGameState()
 {
 	Super::InitGameState();
