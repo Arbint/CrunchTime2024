@@ -36,6 +36,7 @@ void UCGameInstance::CreateSession(const FName& SessionName)
 		SessionSettings.NumPublicConnections = 10;
 
 		SessionSettings.Set(GetSessionNameKey(), SessionName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+		CurrentLobbyName = SessionName;
 		SessionPtr->CreateSession(0, SessionName, SessionSettings);
 	}
 }
@@ -104,7 +105,7 @@ void UCGameInstance::CreateSessionCompleted(FName SessionName, bool bWasSuccessf
 	if (bWasSuccessful)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Session %s Created"), *SessionName.ToString());
-		LoadMapAndListen(GameLevel);
+		LoadMapAndListen(LobbyLevel);
 	}
 	else
 	{

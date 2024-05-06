@@ -25,6 +25,8 @@ public:
 	void FindSessions();
 	const FName& GetSessionNameKey() const { return SessionNameKey; }
 	void JoinSessionWithSearchResultIndex(int SearchResultIndex);
+	FORCEINLINE	FName GetCurrentSessionName() const { return CurrentLobbyName; }
+
 
 protected:
 	virtual void Init() override;
@@ -42,7 +44,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Maps")
 	TSoftObjectPtr<UWorld> GameLevel;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Maps")
+	TSoftObjectPtr<UWorld> LobbyLevel;
+
 	void LoadMapAndListen(TSoftObjectPtr<UWorld> MapToLoad);
 
 	TSharedPtr<FOnlineSessionSearch> OnlineSessionSearch;
+	FName CurrentLobbyName;
 };
