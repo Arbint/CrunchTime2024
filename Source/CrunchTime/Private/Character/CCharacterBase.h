@@ -72,11 +72,12 @@ private:
 
 	void StunTagChanged(const FGameplayTag TagChanged, int32 NewStackCount);
 
+	UPROPERTY()
+	UCAttributeSet* CAttributeSet;
+
 	UPROPERTY(VisibleAnywhere, Category = "Gameplay Ability")
 	UCAbilitySystemComponent* AbilitySystemComponent;
 
-	UPROPERTY()
-	UCAttributeSet* AttributeSet;
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	class UWidgetComponent* StatusWidgetComp;
@@ -148,4 +149,10 @@ private:
 
 	UFUNCTION()
 	void HitDetected(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	/******************************************************/
+	/*                       Debug                        */
+	/******************************************************/
+private:
+	void LogAttributeSet() const;
 };

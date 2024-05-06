@@ -8,6 +8,8 @@ void ACPlayerController::OnPossess(APawn* NewPawn)
 {
 	Super::OnPossess(NewPawn);
 	PostPossessionSetup(NewPawn);
+
+	//Only Grant Ability on the Server
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->InitAbilities();
@@ -30,6 +32,15 @@ void ACPlayerController::PostPossessionSetup(APawn* NewPawn)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Needs CPlayerCharacter as Pawn"));
 		return;
+	}
+	
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("On Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("On Client"));
 	}
 
 	PlayerCharacter->SetupAbilitySystemComponent();

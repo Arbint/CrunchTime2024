@@ -29,11 +29,11 @@ ACCharacterBase::ACCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CAttributeSet = CreateDefaultSubobject<UCAttributeSet>("Attribute Set");
+
 	AbilitySystemComponent = CreateDefaultSubobject<UCAbilitySystemComponent>("Ability System Component");
 	AbilitySystemComponent->SetIsReplicated(true); // replicate means it is synced with the server.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-
-	AttributeSet = CreateDefaultSubobject<UCAttributeSet>("Attribute Set");
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetHealthAttribute()).AddUObject(this, &ACCharacterBase::HealthUpdated);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &ACCharacterBase::MaxHealthUpdated);
@@ -78,18 +78,22 @@ void ACCharacterBase::InitAbilities()
 void ACCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+	//LogAttributeSet();
 	InitStatusHUD();
 }
 
 // Called every frame
 void ACCharacterBase::Tick(float DeltaTime)
 {
+	//LogAttributeSet();
 	Super::Tick(DeltaTime);
 }
 
 void ACCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	//we are AI
 	if (NewController && !NewController->IsPlayerController())
 	{
 		SetupAbilitySystemComponent();
@@ -181,11 +185,8 @@ void ACCharacterBase::InitStatusHUD()
 	}
 
 	StatusGuage->SetRenderScale(FVector2D{0.5f});
-	if(AttributeSet)
-	{
-		StatusGuage->SetHealth(GetHealth(), GetMaxHealth());
-		StatusGuage->SetMana(GetMana(), GetMaxMana());
-	}
+	StatusGuage->SetHealth(GetHealth(), GetMaxHealth());
+	StatusGuage->SetMana(GetMana(), GetMaxMana());
 
 	if (IsLocallyControlled())
 	{
@@ -304,7 +305,7 @@ void ACCharacterBase::ExperienceUpdated(const FOnAttributeChangeData& ChangeData
 void ACCharacterBase::NextLevelExperienceUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Next Level Experience is now: %f"), ChangeData.NewValue);
-	if (HasAuthority() && AttributeSet)
+	if (HasAuthority())
 	{
 		if (ChangeData.NewValue <= GetExperience())
 		{
@@ -378,5 +379,17 @@ void ACCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 void ACCharacterBase::HitDetected(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UAISense_Touch::ReportTouchEvent(this, OtherActor, this, GetActorLocation());
+}
+
+void ACCharacterBase::LogAttributeSet() const
+{
+	if (CAttributeSet)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attribute Set Exists"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attribute Set Missing!!!"));
+	}
 }
 
