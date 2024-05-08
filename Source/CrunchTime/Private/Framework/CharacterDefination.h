@@ -19,7 +19,7 @@ public:
 	UTexture2D* GetIcon() const { return Icon; }
 	TSubclassOf<class ACharacter> GetCharacterClass() const { return CharacterClass; }
 	USkeletalMesh* GetMesh() const;
-
+	TSubclassOf<class UAnimInstance> GetAnimInstance() const;
 private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UAnimInstance> AnimBlueprint;

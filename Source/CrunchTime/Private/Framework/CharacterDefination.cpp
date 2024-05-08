@@ -17,3 +17,8 @@ USkeletalMesh* UCharacterDefination::GetMesh() const
 	}
 	return nullptr;
 }
+
+TSubclassOf<class UAnimInstance> UCharacterDefination::GetAnimInstance() const
+{
+	return AnimBlueprint;
+}
