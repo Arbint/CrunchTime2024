@@ -14,7 +14,7 @@ class ACharacterDisplay : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACharacterDisplay();
-	void SetCharacterWithDefination(class UCharacterDefination* CharacterDef);
+	void SetCharacterWithDefination(const class UCharacterDefination* CharacterDef);
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Display")

@@ -12,6 +12,7 @@
 #include "Widgets/CharacterDefinationEntry.h"
 #include "Components/Button.h"
 #include "Framework/CGameInstance.h"
+#include "Player/CharacterDisplay.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -33,6 +34,7 @@ void ULobbyWidget::NativeConstruct()
 		GameState->OnCharacterSelectedReplicated.AddUObject(this, &ULobbyWidget::CharcterSelectionReplicated);
 	}
 	StartBtn->OnClicked.AddDynamic(this, &ULobbyWidget::LoadGame);
+	SpawnCharacterDisplay();
 }
 
 void ULobbyWidget::LoadGame()
@@ -43,6 +45,26 @@ void ULobbyWidget::LoadGame()
 		GameInst->LoadGameLevel();
 	}
 }
+
+void ULobbyWidget::SpawnCharacterDisplay()
+{
+	if (CharcterDisplayClass)
+	{
+		FActorSpawnParameters SpawnParam;
+		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		CharacterDisplay = GetWorld()->SpawnActor<ACharacterDisplay>(CharcterDisplayClass, SpawnParam);
+		GetOwningPlayer()->SetViewTarget(CharacterDisplay);
+	}
+}
+
+void ULobbyWidget::UpdateCharacterDisplay(const UCharacterDefination* NewDefination)
+{
+	if (CharacterDisplay)
+	{
+		CharacterDisplay->SetCharacterWithDefination(NewDefination);
+	}
+}
+
 
 void ULobbyWidget::SessionNameUpdated(const FName& NewName)
 {
@@ -72,6 +94,7 @@ void ULobbyWidget::CharcterSelectionReplicated(const UCharacterDefination* Selec
 	{
 		UCharacterDefinationEntry* Entry = CharacterList->GetEntryWidgetFromItem<UCharacterDefinationEntry>(Selected);
 		Entry->SetCharacterSelected(true);
+		UpdateCharacterDisplay(Selected);
 	}
 
 	if (Deselected)
@@ -80,4 +103,4 @@ void ULobbyWidget::CharcterSelectionReplicated(const UCharacterDefination* Selec
 		Entry->SetCharacterSelected(false);
 	}
 }
-
+ 

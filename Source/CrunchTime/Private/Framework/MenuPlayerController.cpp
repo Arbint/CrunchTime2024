@@ -22,6 +22,7 @@ void AMenuPlayerController::SpawnUI()
 {
 	if (IsLocalPlayerController() && MenuToSpawn)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawning Widgets for %s"), *GetName());
 		UUserWidget* Widget = CreateWidget<UUserWidget>(this, MenuToSpawn);
 		Widget->AddToViewport();
 		SetShowMouseCursor(true);

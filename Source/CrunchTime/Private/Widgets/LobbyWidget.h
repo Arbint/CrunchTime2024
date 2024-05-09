@@ -31,6 +31,15 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* StartBtn;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Display")
+	TSubclassOf<class ACharacterDisplay> CharcterDisplayClass;
+
+	UPROPERTY()
+	ACharacterDisplay* CharacterDisplay;
+
+	void SpawnCharacterDisplay();
+	void UpdateCharacterDisplay(const class UCharacterDefination* NewDefination);
+
 	UPROPERTY()
 	class ACGameState* GameState;
 
