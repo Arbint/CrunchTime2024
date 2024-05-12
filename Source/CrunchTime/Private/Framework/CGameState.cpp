@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Framework/CGameState.h"
 #include "Net/UnrealNetwork.h"
 #include "Framework/CharacterDefination.h"
@@ -23,8 +22,7 @@ void ACGameState::UpdateCharacterSelection(const UCharacterDefination* NewSelcte
 	{
 		SelectedCharacters.Remove(DeSelected);
 	}
-
-	NetMulticast_UpdatedCharacterSelection(NewSelcted, DeSelected);
+	OnCharacterSelectionUpdated.Broadcast(SelectedCharacters);
 }
 
 bool ACGameState::IsCharacterSelected(const UCharacterDefination* CharacterToCheck) const
@@ -37,13 +35,20 @@ void ACGameState::OnRep_SessionName()
 	OnSessionNameUpdated.Broadcast(SessionName);
 }
 
-void ACGameState::NetMulticast_UpdatedCharacterSelection_Implementation(const UCharacterDefination* NewSelcted, const UCharacterDefination* DeSelected)
-{
-	OnCharacterSelectedReplicated.Broadcast(NewSelcted, DeSelected);
-}
-
 void ACGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME_CONDITION_NOTIFY(ACGameState, SessionName, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ACGameState, SelectedCharacters, COND_None, REPNOTIFY_Always);
+}
+
+void ACGameState::OnRep_SelectedCharacters()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Character Selection Replicated"))
+	for (const auto sel : SelectedCharacters)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected characters are: %s"), sel->GetCharacterName());
+	}
+
+	OnCharacterSelectionUpdated.Broadcast(SelectedCharacters);
 }

@@ -16,6 +16,7 @@ class UCharacterDefinationEntry : public UUserWidget, public IUserObjectListEntr
 	GENERATED_BODY()
 public:
 	void SetCharacterSelected(bool bIsCharacterSelected);
+	const class UCharacterDefination* GetCharacterDefination() const { return CharacterDef; }
 protected:	
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 private:

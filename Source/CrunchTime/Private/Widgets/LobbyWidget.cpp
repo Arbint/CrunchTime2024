@@ -19,6 +19,11 @@ void ULobbyWidget::NativeConstruct()
 	Super::NativeConstruct();
 	GameState = Cast<ACGameState>(UGameplayStatics::GetGameState(this));
 	PlayerState = GetOwningPlayerState<ACPlayerState>();
+	if (PlayerState)
+	{
+		PlayerState->OnPickedCharacterReplicated.AddUObject(this, &ULobbyWidget::UpdateCharacterDisplay);
+	}
+
 	if(GameState)
 	{ 
 		FName LobbyName = GameState->GetSessonName();
@@ -27,14 +32,15 @@ void ULobbyWidget::NativeConstruct()
 
 		PlayerList->SetListItems(GameState->PlayerArray);
 
-		GetWorld()->GetTimerManager().SetTimer(PlayerListUpdateTimerHandle, this, &ULobbyWidget::RefreshPlayerList, 1, true);
+		GetWorld()->GetTimerManager().SetTimer(RefreshLobbyStatusTimerHandle, this, &ULobbyWidget::RefreshLobbyStats, 1, true);
 
 		CharacterList->SetListItems(GameState->GetCharacterDefinations());
 		CharacterList->OnItemSelectionChanged().AddUObject(this, &ULobbyWidget::PlayerSelectedIssued);
-		GameState->OnCharacterSelectedReplicated.AddUObject(this, &ULobbyWidget::CharcterSelectionReplicated);
+		
+		CharcterSelectionReplicated(GameState->GetSelectedCharacters());
+		GameState->OnCharacterSelectionUpdated.AddUObject(this, &ULobbyWidget::CharcterSelectionReplicated);
 	}
 	StartBtn->OnClicked.AddDynamic(this, &ULobbyWidget::LoadGame);
-	SpawnCharacterDisplay();
 }
 
 void ULobbyWidget::LoadGame()
@@ -50,6 +56,7 @@ void ULobbyWidget::SpawnCharacterDisplay()
 {
 	if (CharcterDisplayClass)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawning Charcter Display!"))
 		FActorSpawnParameters SpawnParam;
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		CharacterDisplay = GetWorld()->SpawnActor<ACharacterDisplay>(CharcterDisplayClass, SpawnParam);
@@ -59,6 +66,11 @@ void ULobbyWidget::SpawnCharacterDisplay()
 
 void ULobbyWidget::UpdateCharacterDisplay(const UCharacterDefination* NewDefination)
 {
+	if (!CharacterDisplay)
+	{
+		SpawnCharacterDisplay();
+	}
+
 	if (CharacterDisplay)
 	{
 		CharacterDisplay->SetCharacterWithDefination(NewDefination);
@@ -71,12 +83,14 @@ void ULobbyWidget::SessionNameUpdated(const FName& NewName)
 	LobbyNameText->SetText(FText::FromName(NewName));
 }
 
-void ULobbyWidget::RefreshPlayerList()
+void ULobbyWidget::RefreshLobbyStats()
 {
-	if (GameState)
+	if (!GameState)
 	{
-		PlayerList->SetListItems(GameState->PlayerArray);
+		return;
 	}
+	
+	PlayerList->SetListItems(GameState->PlayerArray);
 }
 
 void ULobbyWidget::PlayerSelectedIssued(UObject* Item)
@@ -88,19 +102,18 @@ void ULobbyWidget::PlayerSelectedIssued(UObject* Item)
 	}
 }
 
-void ULobbyWidget::CharcterSelectionReplicated(const UCharacterDefination* Selected, const UCharacterDefination* Deselected)
+void ULobbyWidget::CharcterSelectionReplicated(const TArray<const UCharacterDefination*>& SelectedCharacters)
 {
-	if (Selected != nullptr)
+	for (UUserWidget* Entry : CharacterList->GetDisplayedEntryWidgets())
 	{
-		UCharacterDefinationEntry* Entry = CharacterList->GetEntryWidgetFromItem<UCharacterDefinationEntry>(Selected);
-		Entry->SetCharacterSelected(true);
-		UpdateCharacterDisplay(Selected);
-	}
-
-	if (Deselected)
-	{
-		UCharacterDefinationEntry* Entry = CharacterList->GetEntryWidgetFromItem<UCharacterDefinationEntry>(Deselected);
-		Entry->SetCharacterSelected(false);
+		UCharacterDefinationEntry* DefinationEntry = Cast<UCharacterDefinationEntry>(Entry);
+		if (DefinationEntry)
+		{
+			DefinationEntry->SetCharacterSelected(false);
+			if (SelectedCharacters.Contains(DefinationEntry->GetCharacterDefination()))
+			{
+				DefinationEntry->SetCharacterSelected(true);
+			}
+		}
 	}
 }
- 

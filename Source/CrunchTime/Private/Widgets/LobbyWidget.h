@@ -45,16 +45,16 @@ private:
 
 	void SessionNameUpdated(const FName& NewName);
 
-	FTimerHandle PlayerListUpdateTimerHandle;
+	FTimerHandle RefreshLobbyStatusTimerHandle;
 
-	void RefreshPlayerList();
-
+	void RefreshLobbyStats();
+	
 	void PlayerSelectedIssued(UObject* Item);
 
 	UPROPERTY()
 	class ACPlayerState* PlayerState;
 
-	void CharcterSelectionReplicated(const UCharacterDefination* Selected, const UCharacterDefination* Deselected);
+	void CharcterSelectionReplicated(const TArray<const UCharacterDefination*>& SelectedCharacters);
 };
 
 

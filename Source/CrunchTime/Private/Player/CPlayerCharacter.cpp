@@ -2,6 +2,7 @@
 
 
 #include "Player/CPlayerCharacter.h"
+#include "Player/useless.h"
 
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
@@ -46,6 +47,7 @@ void ACPlayerCharacter::PawnClientRestart()
 void ACPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PrintMsg();
 	UEnhancedInputComponent* enhancedInputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (enhancedInputComp)
 	{

@@ -84,7 +84,6 @@ private:
 	UFUNCTION()
 	void CancelActionTriggered();
 
-
 	FVector GetMoveFwdDir() const;
 	FVector GetMoveRightDir() const;
 

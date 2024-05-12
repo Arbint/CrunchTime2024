@@ -4,6 +4,7 @@
 #include "Components/SceneComponent.h"
 #include "Framework/CharacterDefination.h"
 #include "Camera/CameraComponent.h"
+
 // Sets default values
 ACharacterDisplay::ACharacterDisplay()
 {
