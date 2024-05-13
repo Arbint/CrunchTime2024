@@ -12,19 +12,19 @@ ACharacterDisplay::ACharacterDisplay()
 	PrimaryActorTick.bCanEverTick = true;
 	SetReplicates(false);
 	RootComponent = CreateDefaultSubobject<USceneComponent>("RootComp");
-	DisplayMesh = CreateDefaultSubobject<USkeletalMeshComponent>("DisplayMesh");
-	DisplayMesh->SetupAttachment(GetRootComponent());
-	ViewCam = CreateDefaultSubobject<UCameraComponent>("ViewCam");
-	ViewCam->SetupAttachment(GetRootComponent());
+	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh");
+	Mesh->SetupAttachment(GetRootComponent());
+	Cam = CreateDefaultSubobject<UCameraComponent>("ViewCam");
+	Cam->SetupAttachment(GetRootComponent());
 }
 
 void ACharacterDisplay::SetCharacterWithDefination(const UCharacterDefination* CharacterDef)
 {
-	if (CharacterDef && DisplayMesh)
+	if (CharacterDef && Mesh)
 	{
-		DisplayMesh->SetSkeletalMesh(CharacterDef->GetMesh());
-		DisplayMesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		DisplayMesh->SetAnimInstanceClass(CharacterDef->GetAnimInstance());
+		Mesh->SetSkeletalMesh(CharacterDef->GetMesh());
+		Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+		Mesh->SetAnimInstanceClass(CharacterDef->GetAnimInstance());
 	}
 }
 

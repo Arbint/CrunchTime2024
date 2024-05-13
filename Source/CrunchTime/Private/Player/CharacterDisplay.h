@@ -18,7 +18,7 @@ public:
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Display")
-	class USkeletalMeshComponent* DisplayMesh;
+	class USkeletalMeshComponent* Mesh;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Display")
-	class UCameraComponent* ViewCam;
+	class UCameraComponent* Cam;
 };
