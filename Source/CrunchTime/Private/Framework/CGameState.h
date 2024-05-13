@@ -19,6 +19,7 @@ class ACGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 public:
+	ACGameState();
 	FOnSessionNameUpdated OnSessionNameUpdated;
 	FOnCharcterSelectionUpdated OnCharacterSelectionUpdated;
 	FName GetSessonName() const {return SessionName;}
@@ -26,7 +27,7 @@ public:
 	void UpdateCharacterSelection(const UCharacterDefination* NewSelcted, const UCharacterDefination* DeSelected);
 	const TArray<class UCharacterDefination*>& GetCharacterDefinations() const { return Characters; }
 	bool IsCharacterSelected(const UCharacterDefination* CharacterToCheck) const;
-	const TArray<const UCharacterDefination*>& GetSelectedCharacters() const { return SelectedCharacters; }
+	const TArray<const UCharacterDefination*>& GetSelectedCharacters() const;
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_SessionName)

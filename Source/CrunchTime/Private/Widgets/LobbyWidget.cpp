@@ -36,8 +36,8 @@ void ULobbyWidget::NativeConstruct()
 
 		CharacterList->SetListItems(GameState->GetCharacterDefinations());
 		CharacterList->OnItemSelectionChanged().AddUObject(this, &ULobbyWidget::PlayerSelectedIssued);
-		
-		CharcterSelectionReplicated(GameState->GetSelectedCharacters());
+		CharacterList->OnEntryWidgetGenerated().AddUObject(this, &ULobbyWidget::CharacterDefinationWidgetCreated);
+
 		GameState->OnCharacterSelectionUpdated.AddUObject(this, &ULobbyWidget::CharcterSelectionReplicated);
 	}
 	StartBtn->OnClicked.AddDynamic(this, &ULobbyWidget::LoadGame);
@@ -115,5 +115,15 @@ void ULobbyWidget::CharcterSelectionReplicated(const TArray<const UCharacterDefi
 				DefinationEntry->SetCharacterSelected(true);
 			}
 		}
+	}
+}
+
+void ULobbyWidget::CharacterDefinationWidgetCreated(UUserWidget& NewEntry)
+{
+	UCharacterDefinationEntry* DefinationEntry = Cast<UCharacterDefinationEntry>(&NewEntry);
+	const TArray<const UCharacterDefination*> SelectedCharacters = GameState->GetSelectedCharacters();
+	if (DefinationEntry && SelectedCharacters.Contains(DefinationEntry->GetCharacterDefination()))
+	{
+		DefinationEntry->SetCharacterSelected(true);
 	}
 }

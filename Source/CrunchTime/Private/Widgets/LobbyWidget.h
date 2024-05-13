@@ -55,6 +55,8 @@ private:
 	class ACPlayerState* PlayerState;
 
 	void CharcterSelectionReplicated(const TArray<const UCharacterDefination*>& SelectedCharacters);
+
+	void CharacterDefinationWidgetCreated(UUserWidget& NewEntry);
 };
 
 

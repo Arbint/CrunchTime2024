@@ -4,6 +4,11 @@
 #include "Net/UnrealNetwork.h"
 #include "Framework/CharacterDefination.h"
 
+ACGameState::ACGameState()
+{
+	bAlwaysRelevant = true;
+}
+
 void ACGameState::SetSessionName(const FName& NewSessionName)
 {
 	SessionName = NewSessionName;
@@ -30,6 +35,11 @@ bool ACGameState::IsCharacterSelected(const UCharacterDefination* CharacterToChe
 	return SelectedCharacters.Contains(CharacterToCheck);
 }
 
+const TArray<const UCharacterDefination*>& ACGameState::GetSelectedCharacters() const
+{
+	return SelectedCharacters;
+}
+
 void ACGameState::OnRep_SessionName()
 {
 	OnSessionNameUpdated.Broadcast(SessionName);
@@ -44,11 +54,5 @@ void ACGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 void ACGameState::OnRep_SelectedCharacters()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Character Selection Replicated"))
-	for (const auto sel : SelectedCharacters)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Selected characters are: %s"), sel->GetCharacterName());
-	}
-
 	OnCharacterSelectionUpdated.Broadcast(SelectedCharacters);
 }
